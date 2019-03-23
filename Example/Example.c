@@ -1,5 +1,5 @@
-#include <pscanf.h>
-#include <assertx.h>
+#include <pscanf.h> 
+#include <assertx.h> 
 #include <random.h>
 
 #define FREE_MA_FUNCTION BorrarMemoria() 
@@ -35,7 +35,7 @@ int* BorrarMemoria(void)
 	return (int*)0x0001;
 }
 
-int** IngresoFC_Matriz(const uint8_t id1, const uint8_t id2)
+int** IngresoFC_Matriz(const uint8_t id1)
 {
 	while (1)
 	{
@@ -96,11 +96,11 @@ int main(void)
 		switch (opcion)
 		{
 			case 1: 
-				if (IngresoFC_Matriz(MATRIZ_A, MATRIZ_B) == NULL) return EXIT_FAILURE;
+				if (IngresoFC_Matriz(MATRIZ_A) == NULL) return EXIT_FAILURE;
 				ImprimirDatos(MATRIZ_A);
 				break;
 			case 2: 
-				if (IngresoFC_Matriz(MATRIZ_B, MATRIZ_A) == NULL) return EXIT_FAILURE;
+				if (IngresoFC_Matriz(MATRIZ_B) == NULL) return EXIT_FAILURE;
 				ImprimirDatos(MATRIZ_B);
 				break;
 			case 3:
