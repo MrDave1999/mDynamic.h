@@ -149,6 +149,8 @@ De este modo no necesitas preocuparte de cuando necesitas liberar la memoria, ta
 Incluso, las macros:
 `CREATE_MATRIX`, `REALLOC_COLS`, `REALLOC_ROWS` llaman/invocan de manera automática la función "LiberarMemoria". Por esa razón todo es más sencillo.
 
+En el siguiente enlace encontrarás un código de ejemplo completo sobre la aplicación de este include: [Programa](https://github.com/MrDave1999/mDynamic.h/blob/master/Example/Example.c)
+
 # Créditos
 
 - [MrDave](https://github.com/MrDave1999)
