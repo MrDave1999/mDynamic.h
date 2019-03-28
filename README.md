@@ -3,7 +3,15 @@
 
 Este archivo de inclusión fue creado especialmente para no tener la necesidad de trabajar con punteros a cada rato al momento de crear una matriz dinámica, donde las dimensiones deben ser introducidas por algún usuario en tiempo de ejecución.
 
-# Instalación
+# <a name= "indice"></a> Índice
+- [Instalación](#instalacion)
+- [Requisitos](#requisitos)
+- [Macros](#macros)
+- [Uso](#uso)
+- [Recomendación](#recomendacion)
+- [Créditos](#creditos)
+
+# <a name= "instalacion"></a> Instalación
 
 Debes agregar `mDynamic.h` en la carpeta `include`, la que viene de forma pre-determinada en el IDE (Entorno de Desarrollo Integrado).
 Luego de eso, necesitarás abrir el programa fuente y incluir el archivo de esta manera:
@@ -14,8 +22,9 @@ Sí tienes algún problema en buscar esa carpeta, también puedes agregar `mDyna
 ```C
 #include "mDynamic.h"
 ```
+[Volver al índice](#indice)
 
-# Requisitos
+# <a name= "requisitos"></a> Requisitos 
 
 - Necesitas definir la macro `MAX_MATRIX` antes de incluir `mDynamic.h`.
 
@@ -59,8 +68,9 @@ Sí tienes algún problema en buscar esa carpeta, también puedes agregar `mDyna
 		return 0;
 	}   
 ```
+[Volver al índice](#indice)
 
-# Macros
+# <a name="macros"></a> Macros 
   
 - `FREE_MEMORY_ALL(namearray, nameptr)`:
 
@@ -241,8 +251,9 @@ Sí tienes algún problema en buscar esa carpeta, también puedes agregar `mDyna
 		return 0;
 	}   
 ```
-  
-# Uso
+[Volver al índice](#indice)
+
+# <a name="uso"></a> Uso
 
 El siguiente ejemplo se basa en tres matrices:
 
@@ -260,7 +271,7 @@ Se va a usar tres `header files` para el desarrollo de este programa:
 
 Este programa de ejemplo será construido de forma modular, a base de funciones.
 
-Lo primero para resolver este problema, es declarando un array de tipo "union" con sus respectivos miembros. El "union" es diferente al "struct", debido que únicamente se ocupa un espacio de memoria para todos los miembros, por esa razón usar "union" es lo esencial para que el include `mDynamic.h` funcione correctamente.
+Lo primero para resolver este problema, es declarando un array de tipo "union" con sus respectivos miembros. El "union" es diferente al "structs", debido que únicamente se ocupa un espacio de memoria para todos los miembros, por esa razón usar "union" es lo esencial para que el include `mDynamic.h` funcione correctamente.
 ```C
 #include <random.h>
 #include <assertx.h>
@@ -318,7 +329,7 @@ uint8_t CrearMatrizA(void)
 ```
 La función `CrearMatrizA` devuelve dos valores, 0 si la macro ALLOC_RC pudo reservar memoria para la matriz A, de lo contrario hace que la función devuelva 1.
 
-Ahora por último nos falta la función para la calcular el promedio de todos los elementos de la matriz A, esta sería la función:
+Ahora por último nos falta la función para calcular el promedio de todos los elementos de la matriz A, esta sería la función:
 ```C
 float CalcularPromedio_MA(void)
 {
@@ -422,7 +433,9 @@ int main(void)
 
 Aquí te dejo el programa completo con su respectivo código fuente y ejecutable: [Programa](https://github.com/MrDave1999/mDynamic.h/tree/master/Programa)
 
-# Recomendación
+[Volver al índice](#indice)
+
+# <a name="recomendacion"></a> Recomendación
 
 Se recomienda llevar este orden al momento de pedir / asignar las filas y columnas de una matriz.
 
@@ -532,17 +545,15 @@ REALLOC_ROWS(MA, matriz, pa)
 /* Se aumenta las filas de la matriz B */
 setrows(MB, 6)
 REALLOC_ROWS(MB, matriz, pb)
-
 ```
+[Volver al índice](#indice)
 
-# Créditos
+# <a name="creditos"></a> Créditos
 
 - [MrDave](https://github.com/MrDave1999)
   - Por crear `mDynamic.h`
-	
 - [Microsoft](https://www.microsoft.com/es-ec/)
   - Se hizo uso de algunos archivos de cabecera estándares como `stdio.h` & `stdlib.h`
-	
 - [P.J.Plauger](https://en.wikipedia.org/wiki/P._J._Plauger)
 	- Por crear `stdint.h` 
 	- [The Standard C Library source code by P.J. Plauger](https://github.com/Justme0/CLIB)
