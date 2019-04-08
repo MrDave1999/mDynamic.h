@@ -7,13 +7,15 @@ enum
 	MB
 };
 
-union poin
+void asignar(const unsigned char mid)
 {
-	int** pa;
-	double** pb;
-};
-
-union poin mx[MAX_MATRIX];
+	int i, j;
+	for (i = 0; i != getrows(mid); ++i)
+	{
+		for (j = 0; j != getcols(mid); ++j)
+			sd(int, mid, i, j, 20);
+	}
+}
 
 void PrintData(void)
 {
@@ -23,7 +25,7 @@ void PrintData(void)
 	for (i = 0; i != getrows(MA); ++i)
 	{
 		for (j = 0; j != getcols(MA); ++j)
-			printf("%d\t", &getdata(MA, mx, pa, i, j));
+			printf("%d\t", &gd(int, MA, i, j));
 		printf("\n");
 	}
 	printf("\n");
@@ -31,7 +33,7 @@ void PrintData(void)
 	for (i = 0; i != getrows(MB); ++i)
 	{
 		for (j = 0; j != getcols(MB); ++j)
-			printf("%d\t", &getdata(MB, mx, pb, i, j));
+			printf("%d\t", &gd(int, MB, i, j));
 		printf("\n");
 	}
 	printf("\n");
@@ -39,39 +41,36 @@ void PrintData(void)
 
 int main(void)
 {
-	setrows(MA, 5)
-	setcols(MA, 3)
-	ALLOC_RC(MA, mx, pa)
+	setrows(MA, 5);
+	setcols(MA, 3);
+	alloc_m(int, MA);
 
-	setrows(MB, 4)
-	setcols(MB, 4)
-	ALLOC_RC(MB, mx, pb)
+	asignar(MA);
 
-	/* DimA = 5x3 , DimB = 4x4 */
-	PrintData();
-	
-	setrows(MA, 7)
-	REALLOC_ROWS(MA, mx, pa)
+	setrows(MB, 4);
+	setcols(MB, 4);
+	alloc_m(int, MB);
 
-	setrows(MB, 2)
-	REALLOC_ROWS(MB, mx, pb)
+	asignar(MB);
 
-	/* DimA = 7x3, DimB = 2x4 */
-	printf("\nRows updates:\n\n");
 	PrintData();
 
-	setcols(MA, 5)
-	REALLOC_COLS(MA, mx, pa)
+	printf("\nRows AND columns updates:\n\n");
 
-	setcols(MB, 7)
-	REALLOC_COLS(MB, mx, pb)
+	setrows(MA, 7);
+	setcols(MA, 5);
+	realloc_m(int, MA, ROWS_COLS);
 
-	/* DimA = 7x5, DimB = 2x7 */
-	printf("\nColumns updates:\n\n");
+	asignar(MA);
+
+	setrows(MB, 2);
+	setcols(MB, 7);
+	realloc_m(int, MB, ROWS_COLS);
+
+	asignar(MB);
+
 	PrintData();
-
-	FREE_MEMORY_ALL(mx, pa)
 	getchar();
 	return EXIT_SUCCESS;
-}   
+}
 
