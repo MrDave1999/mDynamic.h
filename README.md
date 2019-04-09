@@ -79,7 +79,7 @@ mode: El modo a re-dimensionar.
 
 **Existen tres modos:**
 
-ROWS: Re-asigna memoria únicamente para las filas. 
+***ROWS***: Re-asigna memoria únicamente para las filas. 
 
 **Ejemplo 1:**
 ```C
@@ -105,7 +105,8 @@ int main(void)
 }
 ```
 
-COLS: Re-asigna memoria únicamente paras las columnas.
+***COLS:*** Re-asigna memoria únicamente paras las columnas.
+
 **Ejemplo 2:**
 ```C
 int main(void)
@@ -130,7 +131,8 @@ int main(void)
 }
 ```
 
-ROWS_COLS: Re-asigna memoria para las filas y columnas.
+***ROWS_COLS:*** Re-asigna memoria para las filas y columnas.
+
 **Ejemplo 3:**
 ```C
 int main(void)
@@ -250,7 +252,7 @@ int main(void)
 
 - `error(namefunc, ...)`: 
 
-Detecta si una función tuvo algún fallo al momento de asignar memoria y hace detener la ejecución programa.
+Detecta si una función tuvo algún fallo al momento de asignar memoria y hace detener la ejecución del programa.
 
 **Parámetros:**
 
@@ -285,11 +287,11 @@ int main(void)
 # Uso
 
 Un uso completo sobre las macros de `mDynamic.h`.
+
 En este ejemplo se utilizó los siguientes archivos de cabeceras:
 - [random.h](https://github.com/MrDave1999/random.h)
 - [assertx.h](https://github.com/MrDave1999/assertx.h)
 - [pscanf.h](https://github.com/MrDave1999/pscanf.h)
-- [random.h](https://github.com/MrDave1999/random.h)
 ```C
 #define MAX_MATRIX 2 /* Dos matrices dinámicas usará el programa */
 #include <mDynamic.h> /* Inclusión del archivo */
