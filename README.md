@@ -3,15 +3,7 @@
 
 Este archivo de inclusión fue creado especialmente para no tener la necesidad de trabajar con punteros a cada rato al momento de crear una matriz dinámica, donde las dimensiones deben ser introducidas por algún usuario en tiempo de ejecución.
 
-# <a name= "indice"></a> Índice
-- [Instalación](#instalacion)
-- [Requisitos](#requisitos)
-- [Macros](#macros)
-- [Uso](#uso)
-- [Recomendación](#recomendacion)
-- [Créditos](#creditos)
-
-# <a name= "instalacion"></a> Instalación
+# Instalación
 
 Debes agregar `mDynamic.h` en la carpeta `include`, la que viene de forma pre-determinada en el IDE (Entorno de Desarrollo Integrado).
 Luego de eso, necesitarás abrir el programa fuente y incluir el archivo de esta manera:
@@ -22,533 +14,373 @@ Sí tienes algún problema en buscar esa carpeta, también puedes agregar `mDyna
 ```C
 #include "mDynamic.h"
 ```
-[Volver al índice](#indice)
 
-# <a name= "requisitos"></a> Requisitos 
+#  Requisitos 
 
 - Necesitas definir la macro `MAX_MATRIX` antes de incluir `mDynamic.h`.
 
-	Esta macro es esencial definirla porqué el include necesita saber el número de matrices que serán usados en el programa.
+Esta macro es esencial definirla porqué el include necesita saber el número de matrices que serán usados en el programa.
 ```C
-	#define MAX_MATRIX (2) /* Se especifica la cantidad de matrices dinámicas que tendrá el programa */
-	#include "mDynamic.h"
+#define MAX_MATRIX 2 /* Se especifica la cantidad de matrices dinámicas que tendrá el programa */
+#include "mDynamic.h"
 ```
 
-- Cada matriz debe tener un puntero doble y necesita ser miembro de un "union". 
-
-	Para saber la identificación de la matriz, se puede usar un "enum".
-	
-	Por ejemplo:
-```C
-	#define MAX_MATRIX 2
-	#include <mDynamic.h>
-
-	enum
-	{
-		MA,
-		MB
-	};
-
-	union punteros
-	{
-		int** ptr_a; //El puntero doble de la matriz A
-		char** ptr_b; //El puntero doble de la matriz B
-	};
-
-	union punteros matriz[MAX_MATRIX]; //Se declara un arreglo/array de tipo "union"
-
-	int main(void)
-	{
-		/*
-			Por defecto el puntero doble debe apuntar a NULL.
-			Ahora puedes usar el arreglo de esta manera:
-		*/
-		matriz[MA].ptr_a = NULL; 
-		matriz[MB].ptr_b = NULL;
-		return 0;
-	}   
-```
-[Volver al índice](#indice)
-
-# <a name="macros"></a> Macros 
+# Macros 
   
-- `FREE_MEMORY_ALL(namearray, nameptr)`:
+- `getrows(matrixid)`: Obtiene la cantidad de filas de una matriz dinámica.
+- `getcols(matrixid)`: Obtiene la cantidad de columnas de una matriz dinámica.
+- `setrows(matrixid, value)`: Asigna un número de filas a una matriz.
+- `setcols(matrixid, value)`: Asigna un número de columnas a una matriz.
+- `dmat_m(matrixid)`: Libera la memoria de una determinada matriz.
+- `free_m()`: Libera la memoria de todas las matrices dinámicas.
+- `alloc_m(typedata, matrixid)`: 
 
-  Libera la memoria de todas las matrices dinámicas que existan en el montón/heap.
+Reserva memoria para las filas y columnas de una matriz. La macro hace que la función retorne 1 sí hubo algún fallo durante la asignación de memoria.
 
-- `setrows(matrixid, value)`:
-
-	Establece/asigna la cantidad de filas a una matriz.
-	
-- `setcols(matrixid, value)`:
-
-	Establece/asigna la cantidad de columnas a una matriz.
-
-- `ALLOC_RC(matrixid, namearray, nameptr)	`: 
-
-  Asigna memoria tanto para las filas y columnas. Sí no se pudo asignar memoria, la macro hace que el programa finalice su ejecución.
-	
-	**Uso:**
-```C
-	int main(void)
-	{
-		setrows(MA, 5)// Asigna una fila a la matriz A
-		setcols(MA, 3)// Asigna una columna a la matriz A
-		ALLOC_RC(MA, matriz, ptr_a) //Reservamos memoria para las filas y columnas de la matriz A
-
-		FREE_MEMORY_ALL(matriz, ptr_a) //Liberamos la matriz A
-		return 0;
-	}   
-```
-  
-- `REALLOC_COLS(matrixid, namearray, nameptr)`: 
-  
-  Re-asigna memoria para aumentar/disminuir el tamaño de las columnas de una determinada matriz dinámica.
-  Sí no hay espacio disponible para agrandar más el tamaño, la macro libera la memoria y el programa termina su ejecución.
-	
-	**Uso:**
-	
-```C
-	int main(void)
-	{
-		setrows(MA, 5)// Asigna una fila a la matriz A
-		setcols(MA, 3)// Asigna una columna a la matriz A
-		ALLOC_RC(MA, matriz, ptr_a) //Reservamos memoria para las filas y columnas de la matriz A
-
-		setcols(MA, 5)// Nueva columna para la matriz A
-		REALLOC_COLS(MA, matriz, ptr_a) //Aumentamos el tamaño de columnas de la matriz A
-
-		FREE_MEMORY_ALL(matriz, ptr_a) //Liberamos la matriz A
-		return 0;
-	}   
-```
- 
-- `REALLOC_ROWS(matrixid, namearray, nameptr)`:
-
-  Aumenta/disminuye el tamaño de las filas de una determinada matriz dinámica, a la vez también te puede permitir
-  asignar memoria como lo hace la macro `ALLOC_RC`; sin embargo, para usar esta característica, deberás pasar un puntero nulo.
-  Sí la macro no puede (re)-asignar memoria, libera la memoria y efectúa un "return" para que el programa termine su ejecución.
-
-	**Uso:**
-```C
-	int main(void)
-	{
-		setrows(MA, 5)// Asigna una fila a la matriz A
-		setcols(MA, 3)// Asigna una columna a la matriz A
-		
-		//REALLOC_ROWS actúa en este caso como ALLOC_RC.
-		REALLOC_ROWS(MA, matriz, ptr_a) //Reservamos memoria para las filas y columnas de la matriz A. 
-
-		setrows(MA, 7)// Nueva fila para la matriz A
-		REALLOC_ROWS(MA, matriz, ptr_a)// Aumentamos el tamaño de filas de la matriz A
-
-		FREE_MEMORY_ALL(matriz, ptr_a) //Liberamos la memoria de la matriz A
-		return 0;
-	}   
-```
-
-- `getrows(matrixid)`:
-
-	Obtiene la cantidad de filas de una matriz.
-	
-	**Uso:**
-```C
-	int main(void)
-	{
-		setrows(MA, 5)
-		setcols(MA, 3)
-		ALLOC_RC(MA, matriz, ptr_a) 
-
-		printf("Cantidad de filas de la matriz A: %d\n", getrows(MA));
-
-		FREE_MEMORY_ALL(matriz, ptr_a) 
-		return 0;
-	}   
-```
-
-- `getcols(matrixid)`:
-
-	Obtiene la cantidad de columnas de una matriz.
-	
-	**Uso:**
-```C
-	int main(void)
-	{
-		setrows(MA, 5)
-		setcols(MA, 3)
-		ALLOC_RC(MA, matriz, ptr_a) 
-
-		printf("Cantidad de columnas de la matriz A: %d\n", getcols(MA));
-
-		FREE_MEMORY_ALL(matriz, ptr_a) 
-		return 0;
-	}   
-```
-	
-- `setdata(matrixid, namearray, nameptr, numrow, numcol, value)`:
-
-	Establece/asigna un dato a una columna con respecto a una fila.
-	
-	**Uso:**
-```C
-	int main(void)
-	{
-		setrows(MA, 5)
-		setcols(MA, 3)
-		ALLOC_RC(MA, matriz, ptr_a) 
-
-		/*
-			Asigna un número 20 al índice 0 de una fila con respecto al índice 1 de una columna.
-		*/
-		setdata(MA, matriz, ptr_a, 0, 1, 20) //Es equivalente a esto: matriz[MA].ptr_a[0][1] = 20;
-
-		FREE_MEMORY_ALL(matriz, ptr_a) 
-		return 0;
-	}   
-```
-
-- `getdata(matrixid, namearray, nameptr, numrow, numcol)`:
-
-	Obtiene un dato de una columna con respecto a una fila.
-	
-	**Uso:**
-```C
-	int main(void)
-	{
-		setrows(MA, 5)
-		setcols(MA, 3)
-		ALLOC_RC(MA, matriz, ptr_a) 
-
-		setdata(MA, matriz, ptr_a, 0, 1, 20)
-		/* Dará como resultado un 20 */
-		printf("Valor: %d\n", getdata(MA, matriz, ptr_a, 0, 1)); //Es equivalente a esto: matriz[MA].ptr_a[0][1] 
-
-		FREE_MEMORY_ALL(matriz, ptr_a) 
-		return 0;
-	}  
-```
-
-- `getadd(matrixid, namearray, nameptr, numrow)`:
-
-	Obtiene la dirección de memoria del primer elemento de una fila.
-	
-	**Uso:**
-```C
-	int main(void)
-	{
-		unsigned int i;
-		setrows(MA, 5)
-		setcols(MA, 3)
-		ALLOC_RC(MA, matriz, ptr_a) 
-
-		/*
-			Dará como resultado las direcciones de memoria del primer elemento de cada fila
-		*/
-		for (i = 0; i != getrows(MA); ++i)
-			printf("%d\n", getadd(MA, matriz, ptr_a, i));//Es equivalente a esto: matriz[MA].ptr_a[i] 
-
-		FREE_MEMORY_ALL(matriz, ptr_a) 
-		return 0;
-	}   
-```
-[Volver al índice](#indice)
-
-# <a name="uso"></a> Uso
-
-El siguiente ejemplo se basa en tres matrices:
-
-A. Las dimensiones y los datos de la matriz A deben ser pedidos por el usuario y se debe calcular el promedio de todos los elementos de dicha matriz.
-
-B. Las dimensiones y los datos de la matriz B y C deben ser calculados de forma aleatoria y se debe calcular la suma total de sus
-elementos de cada matriz. La matriz B y C son de tipo "int". 
-Además de eso cada vez que se muestre el resultado, se debe mostrar después de eso al usuario que si quiere seguir con el programa, si selecciona N, el programa termina, de lo contrario, sigue ejecutándose.
-
-Se va a usar tres `header files` para el desarrollo de este programa:
-
-- [pscanf.h](https://github.com/MrDave1999/pscanf.h)
-- [random.h](https://github.com/MrDave1999/random.h)
-- [assertx.h](https://github.com/MrDave1999/assertx.h)
-
-Este programa de ejemplo será construido de forma modular, a base de funciones.
-
-Lo primero para resolver este problema, es declarando un array de tipo "union" con sus respectivos miembros. El "union" es diferente al "structs", debido que únicamente se ocupa un espacio de memoria para todos los miembros, por esa razón usar "union" es lo esencial para que el include `mDynamic.h` funcione correctamente.
-```C
-#include <random.h>
-#include <assertx.h>
-#include <pscanf.h>
-
-#define MAX_MATRIX 3 /* Se especifica el número de matrices que se van a usar */
-#include <mDynamic.h>
-
-enum ID_MATRIZ
-{ 
-	MA, //Matriz A
-	MB, //Matriz B
-	MC  //Matriz C
-};
-
-union pun
-{
-	float** pa; //Puntero doble de la matriz A 
-	int** pbc; //Puntero doble de la matriz B y C
-};
-
-union pun matriz[MAX_MATRIX];
-```
-El literal A nos pide esto:
-
-A. Las dimensiones y los datos de la matriz A deben ser pedidos por el usuario y se debe calcular el promedio de todos los elementos de dicha matriz.
-
-La función a utilizar será `CrearMatrizA`:
-```C
-uint8_t CrearMatrizA(void)
-{
-	uint32_t i, j;
-	do
-	{
-		dataread("%d", &getrows(MA), "Ingrese la cantidad de filas de la matriz A:");
-		assertc(getrows(MA) >= 1, "Error: El numero de filas debe ser mayor a 0.")
-		break;
-	} while (1);
-	do
-	{
-		dataread("%d", &getcols(MA), "Ingrese la cantidad de columnas de la matriz A:");
-		assertc(getcols(MA) >= 1, "Error: El numero de columnas debe ser mayor a 0.")
-		break;
-	} while (1);
-	ALLOC_RC(MA, matriz, pa)
-	for (i = 0; i != getrows(MA); ++i)
-	{
-		for (j = 0; j != getcols(MA); ++j)
-		{ //Aquí si es necesario las llaves, la macro "dataread" expande tres códigos 
-			dataread("%f", &matriz[MA].pa[i][j], "Ingrese un dato en la fila: %d con respecto a la columna: %d", i+1, j+1);
-		}
-	}
-	return EXIT_SUCCESS; //Equivalente a esto: <return 0;>
-}
-```
-La función `CrearMatrizA` devuelve dos valores, 0 si la macro ALLOC_RC pudo reservar memoria para la matriz A, de lo contrario hace que la función devuelva 1.
-
-Ahora por último nos falta la función para calcular el promedio de todos los elementos de la matriz A, esta sería la función:
-```C
-float CalcularPromedio_MA(void)
-{
-	float suma = 0;
-	uint32_t i, j;
-	for (i = 0; i != getrows(MA); ++i)
-	{
-		for (j = 0; j != getcols(MA); ++j)
-			suma += matriz[MA].pa[i][j];
-	}
-	return suma / (getrows(MA)* getcols(MA));
-}
-```
-Ahora sólo falta llamar ambas funciones en la función principal:
-```C
-int main(void)
-{
-	char opcion = -1; //Esta variable la usaremos después, para el literal B del problema
-	//Si hubo algún error al momento de reservar memoria para la matriz A, el programa termina.
-	if (CrearMatrizA() == EXIT_FAILURE)
-	{
-		pauseprogram();
-		return EXIT_FAILURE;
-	}
-	printf("El promedio de elementos de la matriz A fue de %f\n\n", CalcularPromedio_MA());
-	pauseprogram();
-```
-Sigamos con el problema, nos vamos al literal B y dice lo siguiente:
-
-B. Las dimensiones y los datos de la matriz B y C deben ser calculados de forma aleatoria y se debe calcular la suma total de sus
-elementos de cada matriz. La matriz B y C son de tipo "int". 
-Además de eso cada vez que se muestre el resultado, se debe mostrar después de eso al usuario que si quiere seguir con el programa, si selecciona N, el programa termina, de lo contrario, sigue ejecutándose.
-
-Ok, debemos crear una función llamada `CrearMatrizBC` y que lleve un parámetro para agregar la identificación de la matriz al momento de invocar dicha subrutina. 
-```C
-uint8_t CrearMatrizBC(const uint8_t matriz_id)
-{
-	uint32_t i, j;
-	int32_t suma = 0;
-	setrows(matriz_id, randomEx(1, 5))
-	setcols(matriz_id, randomEx(1, 5))
-	REALLOC_ROWS(matriz_id, matriz, pbc)
-	REALLOC_COLS(matriz_id, matriz, pbc)
-
-	for (i = 0; i != getrows(matriz_id); ++i)
-	{
-		for (j = 0; j != getcols(matriz_id); ++j)
-			matriz[matriz_id].pbc[i][j] = random(10);
-	}
-	printf("\nMatriz %c (%d x %d)\n\n", (matriz_id == MB) ? 'B' : 'C', getrows(matriz_id), getcols(matriz_id));
-	for (i = 0; i != getrows(matriz_id); ++i)
-	{
-		for (j = 0; j != getcols(matriz_id); ++j)
-		{
-			printf("%d\t", matriz[matriz_id].pbc[i][j]);
-			suma += matriz[matriz_id].pbc[i][j];
-		}
-		puts("");
-	}
-	printf("\nLa suma total de todos los elementos de la matriz %c fue de %d\n", (matriz_id == MB) ? 'B' : 'C', suma);
-	return EXIT_SUCCESS;
-}
-```
-Para finalizar el literal B, debemos terminar el código que dejamos anteriormente en la función principal.
-```C
-int main(void)
-{
-	char opcion = -1;
-	//Si hubo algún error al momento de reservar memoria para la matriz A, el programa termina.
-	if (CrearMatrizA() == EXIT_FAILURE)
-	{
-		pauseprogram();
-		return EXIT_FAILURE;
-	}
-	printf("El promedio de elementos de la matriz A fue de %f\n\n", CalcularPromedio_MA());
-	pauseprogram();
-	while (1)
-	{
-		if (opcion != -1)
-		{
-			dataread("%c", &opcion, "Deseas seguir re-dimensionando? Ingresa S/N - S de SI/N de NO");
-			assertc(opcion == 'S' || opcion == 'N', "Error: Debes ingresar S o N\n")
-			if (opcion == 'N')
-			{
-				FREE_MEMORY_ALL(matriz, pa)/* Hay que liberar la memoria de las matrices activas en el heap */
-				return EXIT_SUCCESS;
-			}
-		}
-		if (CrearMatrizBC(MB) == EXIT_FAILURE || CrearMatrizBC(MC) == EXIT_FAILURE)
-		{
-			pauseprogram();
-			return EXIT_FAILURE;
-		}
-		pauseprogram();
-		opcion = -2;
-	}
-	return EXIT_SUCCESS;
-}   
-```
-**Nota:** El identificador `uint32_t` es un simple alias de `unsigned int` y esta definición viene en el archivo de cabecera estándar `stdint.h`
-
-Aquí te dejo el programa completo con su respectivo código fuente y ejecutable: [Programa](https://github.com/MrDave1999/mDynamic.h/tree/master/Programa)
-
-[Volver al índice](#indice)
-
-# <a name="recomendacion"></a> Recomendación
-
-Se recomienda llevar este orden al momento de pedir / asignar las filas y columnas de una matriz.
-
-El ordenamiento sería así:
+**Ejemplo:**
 ```C
 #define MAX_MATRIX 2
 #include <mDynamic.h>
 
-enum { MA, MB };
-
-union pun
+enum ID_MATRIZ
 {
-	char** pa;
-	int** pb;
+	MA, //Matriz A de tipo entero
+	MB, //Matriz B de tipo flotante
 };
 
-union pun matriz[MAX_MATRIX];
-
 int main(void)
 {
-	/* 1. Se reservaría memoria para la matriz A */
-	setrows(MA, 6)
-	setcols(MA, 4)
-	ALLOC_RC(MA, matriz, pa)
+	/* Asignamos el número de filas y columnas para la matriz A y B */
+	setrows(MA, 6);
+	setcols(MA, 3);
+	setrows(MB, 3);
+	setcols(MB, 2);
 
-	/* 2. Se reservaría memoria para la matriz B */
-	setrows(MB, 5)
-	setcols(MB, 5)
-	ALLOC_RC(MB, matriz, pb)
+	/* Reservamos las filas y columnas de la matriz A y B */
+	alloc_m(int, MA);
+	alloc_m(float, MB);
 
-	/* 3. Se aumenta las filas de la matriz A */
-	setrows(MA, 8)
-	REALLOC_ROWS(MA, matriz, pa)
-
-	/* 4. Se aumenta las filas de la matriz B */
-	setrows(MB, 6)
-	REALLOC_ROWS(MB, matriz, pb)
-
-	/* 5. Se disminuye las columnas de la matriz A */
-	setcols(MA, 3)
-	REALLOC_COLS(MA, matriz, pa)
-
-	/* 6. Se disminuye las columnas de la matriz B */
-	setcols(MB, 4)
-	REALLOC_COLS(MB, matriz, pb)
-
-	/* Fin algoritmo */
+	/* La memoria se libera automáticamente */
 	return 0;
 }
 ```
-Te preguntarás porqué la recomendación y eso se debe porqué puede ocurrir un problema si no se cumple con un buen orden al momento de
-escribir las macros de asignación de memoria.
 
-Mira el siguiente orden y se irá explicando paso a paso el código hasta encontrar el error:
+- `realloc_m(typedata, matrixid, mode)`: 
+
+Hace una re-asignación de memoria para las filas o columnas. La macro también hace que la función retorne 1 sí hubo algún error durante la re-asignación de memoria.
+
+**Parámetros:**
+
+typedata: El tipo de dato de la matriz.
+	
+matrixid: La identificación de la matriz.
+	
+mode: El modo a re-dimensionar.
+
+**Existen tres modos:**
+
+ROWS: Re-asigna memoria únicamente para las filas. 
+
+**Ejemplo 1:**
 ```C
 int main(void)
 {
-	/* 1. Se reservaría memoria para la matriz A */
-	setrows(MA, 6)
-	setcols(MA, 4)
-	ALLOC_RC(MA, matriz, pa)
+	setrows(MA, 6);
+	setcols(MA, 3);
+	setrows(MB, 3);
+	setcols(MB, 2);
+	alloc_m(int, MA);
+	alloc_m(float, MB);
 
-	/* 2. Se reservaría memoria para la matriz B */
-	setrows(MB, 5)
-	setcols(MB, 5)
-	ALLOC_RC(MB, matriz, pb)
+	/* Nuevas filas de la matriz A y B */
+	setrows(MA, 9);
+	setrows(MB, 2);
 
-	/* 3. Se asigna las nuevas filas para la matriz A y B */
-	setrows(MA, 8)
-	setrows(MB, 6)
+	/* Re-asignamos las filas de la matriz A y B */
+	realloc_m(int, MA, ROWS);
+	realloc_m(float, MB, ROWS);
 
-	/* 4. Se aumenta las filas de la matriz A y B */
-	REALLOC_ROWS(MA, matriz, pa)
-	REALLOC_ROWS(MB, matriz, pb)
-
-	/* 5. Se disminuye las columnas de la matriz A */
-	setcols(MA, 3)
-	REALLOC_COLS(MA, matriz, pa)
-
-	/* 6. Se disminuye las columnas de la matriz B */
-	setcols(MB, 4)
-	REALLOC_COLS(MB, matriz, pb)
-
-	/* Fin algoritmo */
+	/* La memoria se libera automáticamente */
 	return 0;
 }
 ```
-**El paso 1 y 2** están bien, pues sólo se asigna memoria para ambas matrices. Dimensiones: Matriz A: 6x4, Matriz B: 5x5.
 
-**El paso 3** tampoco hay problemas, sólo se determina las nuevas filas de la matriz A y B.
-
-**El paso 4** es donde está el inconveniente y no es algo notable en tiempo de ejecución, por lo tanto no te darás cuenta, ya que el error sucederá cuando la macro REALLOC_ROWS no pueda re-asignar más memoria.
-
-**Analizemos la situación:**
-Primero se re-asigna memoria para las filas de la matriz A; pero imagínate que ya no hay más espacio disponible en el montón/heap para re-asignar memoria y por ende, la macro detiene la ejecución del código y libera primero la memoria de la matriz A, luego la matriz B.
-
-Aquí está el grave error, la macro para poder liberar la memoria de la matriz B, necesita la cantidad de filas actuales de la matriz B; sin embargo, le cambiamos la dimensión antes de re-dimensionar la matriz B, eso quiere decir que la macro se quedará con el tamaño de 6 y debería ser 5, porqué aún no RE-DIMENSIONAMOS la matriz B.
-
-¿Qué consecuencias trae esto? En este caso ocurriría un desbordamiento de búfer, en otro caso podría ocasionar fuga de memoria (pérdida de memoria).
-
-Por esa razón la solución más rápida es llevar un orden estándar:
+COLS: Re-asigna memoria únicamente paras las columnas.
+**Ejemplo 2:**
 ```C
-/* Se aumenta las filas de la matriz A */
-setrows(MA, 8)
-REALLOC_ROWS(MA, matriz, pa)
+int main(void)
+{
+	setrows(MA, 6);
+	setcols(MA, 3);
+	setrows(MB, 3);
+	setcols(MB, 2);
+	alloc_m(int, MA);
+	alloc_m(float, MB);
 
-/* Se aumenta las filas de la matriz B */
-setrows(MB, 6)
-REALLOC_ROWS(MB, matriz, pb)
+	/* Nuevas columnas para la matriz A y B */
+	setcols(MA, 5);
+	setcols(MB, 1);
+
+	/* Re-asignamos las columnas de la matriz A y B */
+	realloc_m(int, MA, COLS);
+	realloc_m(float, MB, COLS);
+
+	/* La memoria se libera automáticamente */
+	return 0;
+}
 ```
-[Volver al índice](#indice)
 
-# <a name="creditos"></a> Créditos
+ROWS_COLS: Re-asigna memoria para las filas y columnas.
+**Ejemplo 3:**
+```C
+int main(void)
+{
+	setrows(MA, 6);
+	setcols(MA, 3);
+	setrows(MB, 3);
+	setcols(MB, 2);
+	alloc_m(int, MA);
+	alloc_m(float, MB);
+
+	/* Nuevas filas y columnas de la matriz A y B */
+	setrows(MA, 9);
+	setrows(MB, 2);
+	setcols(MA, 5);
+	setcols(MB, 1);
+
+	/* Re-asignamos las filas y columnas de la matriz A y B */
+	realloc_m(int, MA, ROWS_COLS);
+	realloc_m(float, MB, ROWS_COLS);
+
+	/* La memoria se libera automáticamente */
+	return 0;
+}
+```
+
+
+- `gd(typedata, matrixid, i, j)`:
+
+El nombre `gd` significa `getdata` y sirve para obtener un dato de una columna con respecto a una fila.
+
+**Parámetros:**
+
+typedata: El tipo de dato de la matriz.
+
+matrixid: La identificación de la matriz.
+
+i: El número de una respectiva fila.
+
+j: El número de una respectiva columna.
+
+**Ejemplo:**
+```C
+#define MAX_MATRIX 1
+#include <mDynamic.h>
+#define MA 0
+
+int main(void)
+{
+	int i, j;
+	setrows(MA, 6);
+	setcols(MA, 3);
+	alloc_m(int, MA);
+	/* Imprime todo el contenido de la matriz A  */
+	for (i = 0; i != getrows(MA); ++i)
+	{
+		for (j = 0; j != getcols(MA); ++j)
+			printf("%d\t", gd(int, MA, i, j));
+		printf("\n");
+	}
+	/* La memoria se libera automáticamente */
+	return 0;
+}
+```
+
+- `ga(matrixid, i)`: 
+
+El nombre `ga` significa `getAddress` y sirve para obtener la dirección de memoria del primer dato de una columna con respecto a una fila. Esta macro es especialmente para matrices dinámicas que manejen cadenas.
+
+**Ejemplo:**
+```C
+#define MAX_MATRIX 1
+#include <mDynamic.h>
+#define MA 0
+
+int main(void)
+{
+	setrows(MA, 6);
+	setcols(MA, 5);
+	/* Matriz que guarda cadenas */
+	alloc_m(char, MA);
+	/* Mandamos la primera dirección de memoria de la segunda columna */
+	printf("Ingrese una cadena:\n");
+	scanf("%s", ga(MA, 1));
+	printf("%s\n", ga(MA, 1));
+	
+	/* La memoria se libera automáticamente */
+	return 0;
+}
+```
+
+
+- `sd(typedata, matrixid, i, j, value)`: 
+
+El nombre `sd` significa `setdata` y sirve para asignar un dato a una columna con respecto a una fila.
+```C
+#define MAX_MATRIX 1
+#include <mDynamic.h>
+#define MA 0
+
+int main(void)
+{
+	int i, j;
+	setrows(MA, 6);
+	setcols(MA, 3);
+	alloc_m(int, MA);
+	/* Rellena de datos a la matriz A  */
+	for (i = 0; i != getrows(MA); ++i)
+	{
+		for (j = 0; j != getcols(MA); ++j)
+			sd(int, MA, i, j, 20);
+	}
+	/* La memoria se libera automáticamente */
+	return 0;
+}
+```
+
+- `error(namefunc, ...)`: 
+
+Detecta si una función tuvo algún fallo al momento de asignar memoria y hace detener la ejecución programa.
+
+**Parámetros:**
+
+namefunc: Nombre de la función.
+
+<...> : Argumentos que tenga dicha función.
+
+**Ejemplo:**
+```C
+#define MAX_MATRIX 1
+#include <mDynamic.h>
+#define MA 0
+
+int myfunc(void)
+{
+	setrows(MA, 6);
+	setcols(MA, 5);
+	alloc_m(char, MA);
+	return 0;
+}
+
+int main(void)
+{
+	/* Detecta si hubo fallo en la asignación de memoria durante la ejecución de "myfunc" */
+	error(myfunc);
+	/* La memoria se libera automáticamente */
+	return 0;
+}
+```
+
+
+# Uso
+
+Un uso completo sobre las macros de `mDynamic.h`.
+En este ejemplo se utilizó los siguientes archivos de cabeceras:
+- [random.h](https://github.com/MrDave1999/random.h)
+- [assertx.h](https://github.com/MrDave1999/assertx.h)
+- [pscanf.h](https://github.com/MrDave1999/pscanf.h)
+- [random.h](https://github.com/MrDave1999/random.h)
+```C
+#define MAX_MATRIX 2 /* Dos matrices dinámicas usará el programa */
+#include <mDynamic.h> /* Inclusión del archivo */
+#include <pscanf.h> /* Para poder usar la macro dataread y strread */
+#include <assertx.h> /* Para poder usar la macro assertc */
+#include <random.h> /* Por la macro randomEx */
+#include <stdint.h> /* Por el uso del alias uint8_t, equivalente a la expresión: unsigned char */
+
+enum ID_MATRIX
+{
+	MA_STRING, //Matriz A de tipo char
+	MB_INT //Matriz B de tipo int
+};
+
+uint8_t CreateMatrix_String(void)
+{
+	while (1)
+	{
+		dataread("%d", &getrows(MA_STRING), "Ingrese la cantidad de cadenas para la matriz:");
+		assertc(getrows(MA_STRING) >= 1, "Error: La cantidad de cadenas debe ser mayor a 0");
+		break;
+	}
+	while (1)
+	{
+		dataread("%d", &getcols(MA_STRING), "Ingrese la longitud maxima de caracteres:");
+		assertc(getcols(MA_STRING) >= 1, "Error: La longitud debe ser mayor a 0");
+		break;
+	}
+	/* 
+		Reservamos memoria para una matriz de cadenas, donde la cantidad de filas es igual al número de cadenas
+		y la cantidad de columnas es igual al número de caracteres máximo que puede tener cada cadena.
+	*/
+	alloc_m(char, MA_STRING); 
+	for (uint32_t i = 0; i != getrows(MA_STRING); ++i)
+	{
+		strread(ga(MA_STRING, i), getcols(MA_STRING), "Ingrese una cadena (NUM: %d):", i + 1);
+	}
+	return EXIT_SUCCESS;
+}
+
+uint8_t CreateMatrix_Int(const uint32_t rows, const uint32_t cols)
+{
+	uint8_t i, j;
+	/* Asignación de filas y columnas para la matriz */
+	setrows(MB_INT, rows);
+	setcols(MB_INT, cols);
+	/* Re-asignamos memoria para las filas y columnas */
+	realloc_m(int, MB_INT, ROWS_COLS);
+	/* Rellenamos de datos a la matriz */
+	for (i = 0; i != getrows(MB_INT); ++i)
+		for (j = 0; j != getcols(MB_INT); ++j)
+			sd(int, MB_INT, i, j, random(10));
+	/* Imprime los datos actualizados de la matriz B */
+	for (i = 0; i != getrows(MB_INT); ++i)
+	{
+		for (j = 0; j != getcols(MB_INT); ++j)
+			printf("%d\t", gd(int, MB_INT, i, j));
+		printf("\n");
+	}
+	printf("\n");
+	return EXIT_SUCCESS;
+}
+
+int main(void)
+{
+	uint8_t rows, cols, i;
+	error(CreateMatrix_String); /* Llama a la función y detecta algún error en la asignación de memoria */
+	/* Imprime las cadenas de la matriz A */
+	for (i = 0; i != getrows(MA_STRING); ++i)
+		printf("%s\n", ga(MA_STRING, i));
+	printf("\n");
+	/* Re-asignamos tres veces la matriz B */
+	for (i = 0; i != 3; ++i)
+	{
+		rows = randomEx(1, 5);
+		cols = randomEx(2, 7);
+		error(CreateMatrix_Int, rows, cols);
+	}
+	pauseprogram(); /* macro de pscanf.h */
+	return EXIT_SUCCESS;
+}
+```
+Aquí dejo un programa completo con su respectivo código fuente y ejecutable: [Programa](https://github.com/MrDave1999/mDynamic.h/tree/master/Programa)
+
+Para la realización de este programa, se usó los siguientes `header files`:
+- [random.h](https://github.com/MrDave1999/random.h)
+- [assertx.h](https://github.com/MrDave1999/assertx.h)
+- [pscanf.h](https://github.com/MrDave1999/pscanf.h)
+
+
+# Créditos
 
 - [MrDave](https://github.com/MrDave1999)
   - Por crear `mDynamic.h`
