@@ -384,10 +384,7 @@ Para la realización de este programa, se usó los siguientes `header files`:
 
 # Créditos
 
-- [MrDave](https://github.com/MrDave1999)
-  - Por crear `mDynamic.h`
-- [Microsoft](https://www.microsoft.com/es-ec/)
-  - Se hizo uso de algunos archivos de cabecera estándares como `stdio.h` & `stdlib.h`
-- [P.J.Plauger](https://en.wikipedia.org/wiki/P._J._Plauger)
-	- Por crear `stdint.h` 
-	- [The Standard C Library source code by P.J. Plauger](https://github.com/Justme0/CLIB)
+- [MrDave](https://github.com/MrDave1999) 
+	- Por el desarrollo de mDynamic.h
+- [Microsoft Corporation](https://github.com/Microsoft) 
+	- Se usó el compilador `cl.exe` para poder compilar los códigos de prueba, de ese modo se comprueba sí no hubo algún error.
