@@ -25,6 +25,20 @@ Esta macro es esencial definirla porqué el include necesita saber el número de
 #include "mDynamic.h"
 ```
 
+- Las identificaciones de las matrices deben comenzar desde 0, de lo contrario, ocurriría un desbordamiento de búfer y eso ocasiona que el programa deje de funcionar.
+
+Incorrecto:
+```C
+#define MA 2 //matriz A
+#define MA 3 //matriz B
+```
+
+Correcto:
+```C
+#define MA 0 //matriz A
+#define MA 1 //matriz B
+```
+
 # Macros 
   
 - `getrows(matrixid)`: Obtiene la cantidad de filas de una matriz dinámica.
