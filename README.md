@@ -30,13 +30,13 @@ Esta macro es esencial definirla porqué el include necesita saber el número de
 Incorrecto:
 ```C
 #define MA 2 //matriz A
-#define MA 3 //matriz B
+#define MB 3 //matriz B
 ```
 
 Correcto:
 ```C
 #define MA 0 //matriz A
-#define MA 1 //matriz B
+#define MB 1 //matriz B
 ```
 
 # Macros 
